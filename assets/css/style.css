@@ -30,6 +30,6 @@ body {
   font-size: 16px;
 }
 
-h1 {
-  color: white
+.jumbotron {
+  margin-top: 40px;
 }
