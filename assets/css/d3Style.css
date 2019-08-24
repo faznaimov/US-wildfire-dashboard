@@ -68,3 +68,13 @@
     font-size: 13px;
   }
 }
+
+svg {
+  font-family: "Helvetica Neue", Helvetica;
+}
+
+.line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
