@@ -1,43 +1,46 @@
-var URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
-
-d3.json(URL, function (data) {
+d3.json('assets/data/map_data.geojson', function (data) {
     createFeatures(data.features)
 });
 
 function chooseColor(d) {
-    return d > 6  ? '#581845' :
-           d > 5  ? '#900C3F' :
-           d > 4  ? '#C70039' :
-           d > 3   ? '#FF5733' :
-           d > 2   ? '#FFC300' :
-           d > 1   ? '#BAFF2F' :
+    return d > 4999  ? '#581845' :
+           d > 999  ? '#900C3F' :
+           d > 299  ? '#C70039' :
+           d > 99.9   ? '#FF5733' :
+           d > 9.9   ? '#FFC300' :
+           d > .25   ? '#BAFF2F' :
                     '#4FFF2F';
 };
+// A=greater than 0 but less than or equal to 0.25 acres, 
+// B=0.26-9.9 acres, C=10.0-99.9 acres, D=100-299 acres, 
+// E=300 to 999 acres, F=1000 to 4999 acres, and G=5000+ acres).
 
-function createFeatures(earthquakeData) {
+function createFeatures(fireData) {
     function onEachFeature(feature, layer) {
         var months = ['Jan','Feb','Mar','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
         var days = ['Sun','Mon','Tues','Wed','Thu','Fri','Sat']
-        var timestamp = new Date(feature.properties.time);
+        var timestamp = new Date(feature.properties.date);
         var day = days[timestamp.getDay()];
         var month = months[timestamp.getMonth()];
         var date = timestamp.getDate();
-        var hours = timestamp.getHours();
-        var minutes = "0" + timestamp.getMinutes();
-        var formattedTime = day + ", " + month + " " + date + " " + hours + ':' + minutes.substr(-2);
-        
-        layer.bindPopup(`<strong>Location: ${feature.properties.place}</strong>
+        var year = timestamp.getFullYear();
+        // var hours = timestamp.getHours();
+        // var minutes = "0" + timestamp.getMinutes();
+        var formattedTime = day + ", " + month + " " + date + " " + year ;
+        // + " " + hours + ':' + minutes.substr(-2)
+
+        layer.bindPopup(`<strong>County: ${feature.properties.county}</strong>
             <hr>
-            Magnitude: ${feature.properties.mag}
+            Fire size: ${feature.properties.size} acres
             <br>
             Time: ${formattedTime}`);
     };
 
-    var earthquakes = L.geoJSON(earthquakeData, {
+    var fires = L.geoJSON(fireData, {
         pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
-                radius: Math.pow(2,feature.properties.mag),
-                fillColor: chooseColor(feature.properties.mag),
+                radius: 10,
+                fillColor: chooseColor(feature.properties.size),
                 color: "#000",
                 weight: 1,
                 opacity: 1,
@@ -46,10 +49,10 @@ function createFeatures(earthquakeData) {
         },
         onEachFeature: onEachFeature
     });
-    createMap(earthquakes);
+    createMap(fires);
 };
-
-function createMap(earthquakes) {
+// Math.pow(2,feature.properties.size)
+function createMap(fires) {
     
     var streetmap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
         attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
@@ -64,33 +67,25 @@ function createMap(earthquakes) {
         id: "mapbox.dark",
         accessToken: API_KEY
     });
-
-    var physicalmap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}.png?access_token={accessToken}"', {
-	    attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service',
-        maxZoom: 18,
-        id: "mapbox.physical",
-        accessToken: API_KEY
-});
     
     // Define a baseMaps object to hold our base layers
     var baseMaps = {
         "Street Map": streetmap,
-        "Dark Map": darkmap,
-        "Physical Map": physicalmap
+        "Dark Map": darkmap
     };
     
     // Create overlay object to hold our overlay layer
     var overlayMaps = {
-        Earthquakes: earthquakes
+        Fires: fires
     };
     
     // Create our map, giving it the streetmap and earthquakes layers to display on load
     var myMap = L.map("map", {
         center: [
-          37.09, -95.71
+            37.09, -95.71
         ],
         zoom: 5,
-        layers: [streetmap, earthquakes]
+        layers: [streetmap, fires]
     });
     
     // Create a layer control
@@ -106,51 +101,17 @@ function createMap(earthquakes) {
     legend.onAdd = function (map) {
 
         var div = L.DomUtil.create('div', 'info legend'),
-            grades = [0, 1, 2, 3, 4, 5, 6],
+            grades = [0, 0.25, 9.9, 99.9, 299, 999, 4999],
             labels = [];
 
         for (var i = 0; i < grades.length; i++) {
             div.innerHTML +=
                 '<i style="background:' + chooseColor(grades[i] + 1) + '"></i> ' +
-                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1]  + ' acres' + '<br>' : '+' + ' acres');
         }
 
         return div;
-    };
+    }
 
     legend.addTo(myMap);
 };
-
-
-// var myMap = L.map("map", {
-//     center: [39.8283, 98.5795],
-//     zoom: 6
-// });
-  
-// L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-//     attribution: "Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='https://www.mapbox.com/'>Mapbox</a>",
-//     maxZoom: 6,
-//     id: "mapbox.streets",
-//     accessToken: 'pk.eyJ1Ijoic2hvb3NoaWUyMDEyIiwiYSI6ImNqejkweGFveDFkNXQzbnFpY2dvbHlhOWMifQ.pw67tjIsDxdnR-KibW2bDQ'
-//   }).addTo(myMap);
-  
-// var url = "https://www.openstreetmap.org/#map=4/37.79/-95.63";
-  
-// d3.csv("Heatmap.csv", function(err, heatdata) {
-//     if (err) throw err;
-//     console.log(heatdata);
-      
-//     var heatArray = [];
-      
-//     for (var i = 0; i < heatdata.fire_size; i++) {
-//         var location = heatdata[i].location;
-          
-//         if (location) {
-//             heatArray.push([location.latitude[1], location.longitude[0]]);
-//             }
-//         }
-        
-//     var heat = L.heatLayer(heatArray, {
-//         radius: 50,
-//         blur: 70}).addTo(myMap);
-// });
