@@ -11,6 +11,17 @@ function chooseColor(d) {
            d > .25   ? '#BAFF2F' :
                     '#4FFF2F';
 };
+
+function chooseRadius(d) {
+    return d > 4999  ? 50 :
+           d > 999  ? 40 :
+           d > 299  ? 30 :
+           d > 99.9   ? 20 :
+           d > 9.9   ? 15 :
+           d > .25   ? 10 :
+                    5;
+};
+
 // A=greater than 0 but less than or equal to 0.25 acres, 
 // B=0.26-9.9 acres, C=10.0-99.9 acres, D=100-299 acres, 
 // E=300 to 999 acres, F=1000 to 4999 acres, and G=5000+ acres).
@@ -39,7 +50,7 @@ function createFeatures(fireData) {
     var fires = L.geoJSON(fireData, {
         pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
-                radius: 10,
+                radius: chooseRadius(feature.properties.size),
                 fillColor: chooseColor(feature.properties.size),
                 color: "#000",
                 weight: 1,
@@ -95,7 +106,19 @@ function createMap(fires) {
         collapsed: false
     }).addTo(myMap);
 
-    // Legend
+    //timeline
+//Create a marker layer (in the example done via a GeoJSON FeatureCollection)
+
+// var sliderControl = L.control.sliderControl({position: "topright", layer: fires});
+var sliderControl = L.control.sliderControl({position: "topright", layer: fires, range: true});
+
+//Make sure to add the slider to the map ;-)
+myMap.addControl(sliderControl);
+
+//And initialize the slider
+sliderControl.startSlider();
+
+// Legend
     var legend = L.control({ position: 'bottomright' });
 
     legend.onAdd = function (map) {
