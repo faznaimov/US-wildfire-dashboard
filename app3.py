@@ -105,7 +105,6 @@ def map_data():
         print('{} geotagged features saved to file'.format(len(geojson_dict['features'])))
 
 
-
 if __name__ == "__main__":
     app.run()
 
