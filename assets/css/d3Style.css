@@ -1,34 +1,21 @@
-/* #pieChart {    
-	position:absolute;
-	/* top:40px;
-	left:40px; */
-
-/* }
-
 #lineChart {    
 	position:absolute;
-	top:250px;
-	left:420px;
-} */
-
-#barChart {
-	position:absolute;
-	top:600px;
-	left:10px;
-} */
+	top:10px;
+	left:400px;
+}
 
 .slice {
-   font-size: 11pt;
-   font-family: Verdana;
-   fill: white;
-   font-weight: bold;	
-  	} 
+  font-size: 11pt;
+  font-family: Verdana;
+  fill: white;
+  /* font-weight: bold;	 */
+} 
 
 /*for line chart*/
 .axis path, .axis line {
-    fill: none;
-    stroke: black;
-    shape-rendering: crispEdges;
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges; 
 }
 
 .line {
@@ -45,26 +32,26 @@
 				
 
 .axis text {
-    font-family: Verdana;
-    font-size: 11px;
+  font-family: Verdana;
+  font-size: 11px;
 }
 
 .title {
-	 font-family: Verdana;
-    font-size: 15px;	
+	font-family: Verdana;
+  font-size: 15px;	
 		
 }
 
 .xAxis {
-    font-family: verdana;
-    font-size: 11px;
-    fill: black;
+  font-family: verdana;
+  font-size: 11px;
+  fill: black;
 }  
 
 .yAxis {
-    font-family: verdana;
-    font-size: 11px;
-    fill: white;
+  font-family: verdana;
+  font-size: 11px;
+  fill: white;
 }
 
   
@@ -95,14 +82,6 @@ td {
 	fill       : grey;
 	text-anchor: middle;
 	font-weight: bold;
-	/*font-style: italic;*/
-}
-
-.container-fluid {
-    position: relative;
-    align-self: center;
-    margin-left: 60 px;
-    margin-right: 60 px;
 }
 /* 
 .inactive:hover {
