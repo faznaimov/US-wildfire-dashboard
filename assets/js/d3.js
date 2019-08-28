@@ -169,7 +169,7 @@ function dsBarChart(cause, dataset) {
     };
     
     var margin = {top: 30, right: 5, bottom: 20, left: 50},
-        width = 960 - margin.left - margin.right,
+        width = 1080 - margin.left - margin.right,
         height = 350 - margin.top - margin.bottom,
         barPadding = 1
                     
@@ -255,11 +255,11 @@ function dsBarChart(cause, dataset) {
     // Title
     
     svg.append("text")
-        .attr("x", (width + margin.left + margin.right)/2)
+        .attr("x", (width + margin.left + margin.right)/2 + 40 )
         .attr("y", 15)
         .attr("class","title")				
         .attr("text-anchor", "middle")
-        .text("Overall Wildfire Breakdown")
+        .text("Overall Wildfire Breakdown 1992 - 2015")
     ;
 };
 /* ** UPDATE CHART ** */
@@ -276,7 +276,7 @@ function updateBarChart(cause, colorChosen, dataset) {
     };
         
     var margin = {top: 30, right: 5, bottom: 20, left: 50},
-        width = 960 - margin.left - margin.right,
+        width = 1080 - margin.left - margin.right,
         height = 350 - margin.top - margin.bottom,
         barPadding = 1
     ;
@@ -324,11 +324,11 @@ function updateBarChart(cause, colorChosen, dataset) {
         
 
         svg.selectAll("text.title") // target the text element(s) which has a title class defined
-            .attr("x", (width + margin.left + margin.right)/2)
+            .attr("x", (width + margin.left + margin.right)/2 + 40)
             .attr("y", 15)
             .attr("class","title")				
             .attr("text-anchor", "middle")
-            .text(cause + " Wildfire Breakdown")
+            .text(cause + " Wildfire Breakdown 1992 - 2015")
         ;
 }
 
@@ -347,7 +347,7 @@ function dsLineChart(cause,dataset) {
     };
 
     var margin = {top: 100, right: 20, bottom: 20, left: 100},
-        width = 550 - margin.left - margin.right,
+        width = 700 - margin.left - margin.right,
         height = 450 - margin.top - margin.bottom
     ;
 
@@ -404,10 +404,10 @@ function dsLineChart(cause,dataset) {
     ;
 
     plot.append("text")
-        .text(totalCount)
+        .text("Total number of Wildfires: " + totalCount)
         .attr("id","lineChartTitle2")
         .attr("x",width/2)
-        .attr("y",height/1.1)	
+        .attr("y", -15)	
         ;
     /* descriptive titles -- end */
         
@@ -430,14 +430,14 @@ function dsLineChart(cause,dataset) {
         .attr("r", 3.5)
         .attr("stroke", "lightgrey")
         .append("title")
-        .text(function(d) { return "Total number of wildfires in "+ d.date + ": " + d.count; })
+        .text(function(d) { return "Total number of wildfires in "+ d.date + " was " + d.count; })
         ;
 
     // svg.append("text")
-    //     .text("Performance 2012")
+    //     .text("Wildfire 1992-2015")
     //     .attr("id","lineChartTitle1")	
     //     .attr("x",margin.left + ((width + margin.right)/2))
-    //     .attr("y", 10)
+    //     .attr("y", 80)
     //     ;
 
 }
@@ -445,7 +445,7 @@ function dsLineChart(cause,dataset) {
 /* ** UPDATE CHART ** */
 // 
 
-/* updates bar chart on request */
+/* updates line chart on request */
 function updateLineChart(cause, colorChosen, dataset) {
 
     var currentDatasetLineChart = [];   
@@ -456,7 +456,7 @@ function updateLineChart(cause, colorChosen, dataset) {
     };
 
     var margin = {top: 100, right: 20, bottom: 20, left: 100},
-        width = 550 - margin.left - margin.right,
+        width = 700 - margin.left - margin.right,
         height = 450 - margin.top - margin.bottom
     ;
 
@@ -490,7 +490,7 @@ function updateLineChart(cause, colorChosen, dataset) {
     ;
     
     plot.select("text")
-        .text(totalCount)
+        .text("Total number of Wildfires by "+ cause + ": " + totalCount)
     ;
     /* descriptive titles -- end */
     
@@ -534,7 +534,7 @@ function updateLineChart(cause, colorChosen, dataset) {
     
     path
         .selectAll("title")
-        .text(function(d) { return "Total number of wildfires in " + d.date + " caused by " + cause + ": " + d.count; })	 
+        .text(function(d) { return "Total number of wildfires in " + d.date + " caused by " + cause + " was " + d.count; })	 
     ;  
 
 }
@@ -572,8 +572,8 @@ d3.csv("assets/data/fire_data.csv").then(function(csvData){
     d3.select("#pieChart").selectAll("g.slice")
         .on("click", function(d,i) {
             // var color = d3.selectAll("path") SELECT FILL VALUE
-            updateBarChart(d.data.cause, color, dataset);
-            updateLineChart(d.data.cause, color, dataset);
+            updateBarChart(d.data.cause, color(i), dataset);
+            updateLineChart(d.data.cause, color(i), dataset);
   
         });
 });
