@@ -11,6 +11,17 @@ function chooseColor(d) {
            d > .25   ? '#BAFF2F' :
                     '#4FFF2F';
 };
+
+function chooseRadius(d) {
+    return d > 4999  ? 50 :
+           d > 999  ? 40 :
+           d > 299  ? 30 :
+           d > 99.9   ? 15 :
+           d > 9.9   ? 8 :
+           d > .25   ? 5 :
+                    2;
+};
+
 // A=greater than 0 but less than or equal to 0.25 acres, 
 // B=0.26-9.9 acres, C=10.0-99.9 acres, D=100-299 acres, 
 // E=300 to 999 acres, F=1000 to 4999 acres, and G=5000+ acres).
@@ -39,7 +50,7 @@ function createFeatures(fireData) {
     var fires = L.geoJSON(fireData, {
         pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
-                radius: 10,
+                radius: chooseRadius(feature.properties.size),
                 fillColor: chooseColor(feature.properties.size),
                 color: "#000",
                 weight: 1,
@@ -51,7 +62,7 @@ function createFeatures(fireData) {
     });
     createMap(fires);
 };
-// Math.pow(2,feature.properties.size)
+
 function createMap(fires) {
     
     var streetmap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
@@ -85,7 +96,12 @@ function createMap(fires) {
             37.09, -95.71
         ],
         zoom: 5,
-        layers: [streetmap, fires]
+        layers: [streetmap, fires],
+        timeDimension: true,
+        timeDimensionOptions: {
+            timeInterval: "2014-01-01/2014-12-31",
+            period: "PT1H"},
+        timeDimensionControl: true,
     });
     
     // Create a layer control
@@ -95,7 +111,14 @@ function createMap(fires) {
         collapsed: false
     }).addTo(myMap);
 
-    // Legend
+    //TimeDimention
+    // Create and add a TimeDimension Layer to the map
+    // L.timeDimension.layer.geoJson(fires).addTo(map);
+    
+    // tdWmsLayer.addTo(map);
+
+
+    // // Legend
     var legend = L.control({ position: 'bottomright' });
 
     legend.onAdd = function (map) {
@@ -114,4 +137,18 @@ function createMap(fires) {
     }
 
     legend.addTo(myMap);
+
+
+    // Slider
+
+    //Create a marker layer (in the example done via a GeoJSON FeatureCollection)
+    var sliderControl = L.control.sliderControl({position: "bottomleft", layer: fires});
+
+    //Make sure to add the slider to the map ;-)
+    // map.addControl(sliderControl);
+
+    sliderControl.addTo(myMap)
+
+    //And initialize the slider
+    sliderControl.startSlider();
 };

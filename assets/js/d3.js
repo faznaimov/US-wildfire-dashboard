@@ -169,7 +169,7 @@ function dsBarChart(cause, dataset) {
     };
     
     var margin = {top: 30, right: 5, bottom: 20, left: 50},
-        width = 960 - margin.left - margin.right,
+        width = 1080 - margin.left - margin.right,
         height = 350 - margin.top - margin.bottom,
         barPadding = 1
                     
@@ -255,11 +255,11 @@ function dsBarChart(cause, dataset) {
     // Title
     
     svg.append("text")
-        .attr("x", (width + margin.left + margin.right)/2)
+        .attr("x", (width + margin.left + margin.right)/2 + 40 )
         .attr("y", 15)
         .attr("class","title")				
         .attr("text-anchor", "middle")
-        .text("Overall Sales Breakdown 2012")
+        .text("Overall Wildfire Breakdown 1992 - 2015")
     ;
 };
 /* ** UPDATE CHART ** */
@@ -276,7 +276,7 @@ function updateBarChart(cause, colorChosen, dataset) {
     };
         
     var margin = {top: 30, right: 5, bottom: 20, left: 50},
-        width = 960 - margin.left - margin.right,
+        width = 1080 - margin.left - margin.right,
         height = 350 - margin.top - margin.bottom,
         barPadding = 1
     ;
@@ -324,11 +324,11 @@ function updateBarChart(cause, colorChosen, dataset) {
         
 
         svg.selectAll("text.title") // target the text element(s) which has a title class defined
-            .attr("x", (width + margin.left + margin.right)/2)
+            .attr("x", (width + margin.left + margin.right)/2 + 40)
             .attr("y", 15)
             .attr("class","title")				
             .attr("text-anchor", "middle")
-            .text(cause + "'s Sales Breakdown 2012")
+            .text(cause + " Wildfire Breakdown 1992 - 2015")
         ;
 }
 
@@ -346,24 +346,28 @@ function dsLineChart(cause,dataset) {
         }
     };
 
-    var margin = {top: 100, right: 20, bottom: 0, left: 100},
-        width = 600 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom
+    var margin = {top: 100, right: 20, bottom: 20, left: 100},
+        width = 700 - margin.left - margin.right,
+        height = 450 - margin.top - margin.bottom
     ;
 
+    
     var xScale = d3.scaleLinear()
         .domain([0, firstDatasetLineChart.length-1])
         .range([0, width])
-        ;
+    ;
 
     var yScale = d3.scaleLinear()
         .domain([0, d3.max(firstDatasetLineChart, function(d) { return d.count; })])
         .range([height, 0])
-        ;
-    
+    ;
+
+    var bottomAxis = d3.axisBottom(xScale);
+    var leftAxis = d3.axisLeft(yScale);
+
     var line = d3.line()
-        //.x(function(d) { return xScale(d.year); })
-        .x(function(d, i) { return xScale(i); })
+        // .x(function(d) { return xScale(d.year); })
+        .x(function(d,i) { return xScale(i); })
         .y(function(d) { return yScale(d.count); })
         ;
     
@@ -377,17 +381,34 @@ function dsLineChart(cause,dataset) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("id", "lineChartPlot")
+    ;
+
+    // // append x axis
+    // plot.append("g")
+    //     .classed("x-axis", true)
+    //     .attr("transform", `translate(0, ${height})`)
+    //     .call(bottomAxis)
+    // ;
+
+    // // append y axis
+    // plot.append("g")
+    //     .classed("y-axis", true)
+    //     .call(leftAxis)
+    // ;
+
+
+    // creating sum of count by cause
+    var totalCount = firstDatasetLineChart.reduce(function(a,b){
+          return a + b.count;
+        }, 0)
+    ;
+
+    plot.append("text")
+        .text("Total number of Wildfires: " + totalCount)
+        .attr("id","lineChartTitle2")
+        .attr("x",width/2)
+        .attr("y", -15)	
         ;
-
-        /* descriptive titles as part of plot -- start */
-    var dsLength=firstDatasetLineChart.length;
-
-    // plot.append("text")
-    //     .text(firstDatasetLineChart[dsLength-1].count)
-    //     .attr("id","lineChartTitle2")
-    //     .attr("x",width/2)
-    //     .attr("y",height/2)	
-    //     ;
     /* descriptive titles -- end */
         
     plot.append("path")
@@ -409,14 +430,14 @@ function dsLineChart(cause,dataset) {
         .attr("r", 3.5)
         .attr("stroke", "lightgrey")
         .append("title")
-        .text(function(d) { return d.date + ": " + d.count; })
+        .text(function(d) { return "Total number of wildfires in "+ d.date + " was " + d.count; })
         ;
 
     // svg.append("text")
-    //     .text("Performance 2012")
+    //     .text("Wildfire 1992-2015")
     //     .attr("id","lineChartTitle1")	
     //     .attr("x",margin.left + ((width + margin.right)/2))
-    //     .attr("y", 10)
+    //     .attr("y", 80)
     //     ;
 
 }
@@ -424,7 +445,7 @@ function dsLineChart(cause,dataset) {
 /* ** UPDATE CHART ** */
 // 
 
-/* updates bar chart on request */
+/* updates line chart on request */
 function updateLineChart(cause, colorChosen, dataset) {
 
     var currentDatasetLineChart = [];   
@@ -434,65 +455,86 @@ function updateLineChart(cause, colorChosen, dataset) {
         }
     };
 
-    var margin = {top: 100, right: 20, bottom: 0, left: 100},
-        width = 600 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom
+    var margin = {top: 100, right: 20, bottom: 20, left: 100},
+        width = 700 - margin.left - margin.right,
+        height = 450 - margin.top - margin.bottom
     ;
 
     var xScale = d3.scaleLinear()
         .domain([0, currentDatasetLineChart.length-1])
         .range([0, width])
-        ;
+    ;
 
     var yScale = d3.scaleLinear()
         .domain([0, d3.max(currentDatasetLineChart, function(d) { return d.count; })])
         .range([height, 0])
-        ;
+    ;
     
+    var bottomAxis = d3.axisBottom(xScale);
+    var leftAxis = d3.axisLeft(yScale);
+
     var line = d3.line()
-    .x(function(d, i) { return xScale(i); })
-    .y(function(d) { return yScale(d.count); })
+        .x(function(d, i) { return xScale(i); })
+        .y(function(d) { return yScale(d.count); })
     ;
 
-var plot = d3.select("#lineChartPlot")
-    .datum(currentDatasetLineChart)
+    var plot = d3.select("#lineChartPlot")
+        .datum(currentDatasetLineChart)
     ;
     
     /* descriptive titles as part of plot -- start */
-    var dsLength=currentDatasetLineChart.length;
+    // creating sum of count by cause
+    var totalCount = currentDatasetLineChart.reduce(function(a,b){
+        return a + b.count;
+        }, 0)
+    ;
     
     plot.select("text")
-        .text(currentDatasetLineChart[dsLength-1].count)
-        ;
+        .text("Total number of Wildfires by "+ cause + ": " + totalCount)
+    ;
     /* descriptive titles -- end */
     
     plot
-    .select("path")
+        .select("path")
         .transition()
         .duration(750)			    
-    .attr("class", "line")
-    .attr("d", line)	
-    // add color
+        .attr("class", "line")
+        .attr("d", line)	
+        // add color
         .attr("stroke", colorChosen)
     ;
     
+    // // append x axis
+    // plot.append("g")
+    //     .classed("x-axis", true)
+    //     .attr("transform", `translate(0, ${height})`)
+    //     .call(bottomAxis)
+    // ;
+
+    // // append y axis
+    // plot.append("g")
+    //     .classed("y-axis", true)
+    //     .call(leftAxis)
+    // ;
+
+    
     var path = plot
         .selectAll(".dot")
-    .data(currentDatasetLineChart)
-    .transition()
+        .data(currentDatasetLineChart)
+        .transition()
         .duration(750)
-    .attr("class", "dot")
-    .attr("fill", function (d) { return d.count==d3.min(currentDatasetLineChart, function(d) { return d.count; }) ? "red" : (d.count==d3.max(currentDatasetLineChart, function(d) { return d.count; }) ? "green" : "white") } )
-    .attr("cx", line.x())
-    .attr("cy", line.y())
-    .attr("r", 3.5)
-    // add color
+        .attr("class", "dot")
+        .attr("fill", function (d) { return d.count==d3.min(currentDatasetLineChart, function(d) { return d.count; }) ? "red" : (d.count==d3.max(currentDatasetLineChart, function(d) { return d.count; }) ? "green" : "white") } )
+        .attr("cx", line.x())
+        .attr("cy", line.y())
+        .attr("r", 3.5)
+        // add color
         .attr("stroke", colorChosen)
     ;
     
     path
-    .selectAll("title")
-    .text(function(d) { return d.year + ": " + d.count; })	 
+        .selectAll("title")
+        .text(function(d) { return "Total number of wildfires in " + d.date + " caused by " + cause + " was " + d.count; })	 
     ;  
 
 }
@@ -523,41 +565,15 @@ d3.csv("assets/data/fire_data.csv").then(function(csvData){
     dsBarChart(cause,dataset);
 
     dsLineChart(cause,dataset);
-    
-    // // xLinearScale function above csv import
-    // var xLinearScale = xScale(dataset, chosenXAxis);
-
-    // // Create y scale function
-    // var yLinearScale = yScale(dataset, chosenYAxis);
-
-    // // Create initial axis functions
-    // var bottomAxis = d3.select('.lineChart').axisBottom(xLinearScale);
-    // var leftAxis = d3.axisLeft(yLinearScale);
-
-    // // append x axis
-    // var xAxis = d3.append("g")
-    //   .classed("x-axis", true)
-    //   .attr("transform", `translate(0, ${height})`)
-    //   .call(bottomAxis);
-
-    // // append y axis
-    // var yAxis = chartGroup.append("g")
-    //   .classed("y-axis", true)
-    //   // .attr("transform", `translate(${width}, 0)`) // FIX THIS
-    //   .call(leftAxis);
-
+ 
     color = d3.scaleOrdinal(d3.schemePaired)
     // y axis labels event listener
 
     d3.select("#pieChart").selectAll("g.slice")
         .on("click", function(d,i) {
+            // var color = d3.selectAll("path") SELECT FILL VALUE
             updateBarChart(d.data.cause, color(i), dataset);
             updateLineChart(d.data.cause, color(i), dataset);
-            
-            // updates y scale for new data
-            yLinearScale = yScale(dataset, d.data.cause);
-
-            // updates y axis with transition
-            yAxis = renderYAxes(yLinearScale, yAxis);    
+  
         });
 });
