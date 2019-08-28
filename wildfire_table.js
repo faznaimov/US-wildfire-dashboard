@@ -40,7 +40,7 @@ function TableBottun() {
     }
     
     if (InputState !=""){
-        filteredData = filteredData.filter(filterdata => filterdata.STATE.toLowerCase() === inputState.toLowerCase());
+        filteredData = filteredData.filter(filterdata => filterdata.STATE.toUpperCase() === inputState.toUpperCase());
         }
 
     tbody.html('');
