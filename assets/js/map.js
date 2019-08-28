@@ -96,26 +96,21 @@ function createMap(fires) {
             37.09, -95.71
         ],
         zoom: 5,
-        layers: [streetmap, fires],
         timeDimension: true,
         timeDimensionOptions: {
             timeInterval: "2014-01-01/2014-12-31",
             period: "PT1H"},
         timeDimensionControl: true,
+        layers: [streetmap, fires]
     });
     
     // Create a layer control
     // Pass in our baseMaps and overlayMaps
     // Add the layer control to the map
     L.control.layers(baseMaps, overlayMaps, {
-        collapsed: false
+        collapsed: true
     }).addTo(myMap);
 
-    //TimeDimention
-    //Create and add a TimeDimension Layer to the map
-    L.timeDimension.layer.geoJson(fires).addTo(map);
-    
-    tdWmsLayer.addTo(map);
 
 
     // // Legend
@@ -138,6 +133,10 @@ function createMap(fires) {
 
     legend.addTo(myMap);
 
+    //TimeDimention
+    var timeSeriesLayer = L.geoJSON(timeSeriesGeoJSON, {style: style});
+    var geojson = L.timeDimension.layer.geoJson(timeSeriesLayer, {updateTimeDimensionMode: 'replace'});
+    geojson.addTo(myMap);
 
     // // Slider
 
