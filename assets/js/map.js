@@ -112,10 +112,10 @@ function createMap(fires) {
     }).addTo(myMap);
 
     //TimeDimention
-    // Create and add a TimeDimension Layer to the map
-    // L.timeDimension.layer.geoJson(fires).addTo(map);
+    //Create and add a TimeDimension Layer to the map
+    L.timeDimension.layer.geoJson(fires).addTo(map);
     
-    // tdWmsLayer.addTo(map);
+    tdWmsLayer.addTo(map);
 
 
     // // Legend
@@ -139,16 +139,16 @@ function createMap(fires) {
     legend.addTo(myMap);
 
 
-    // Slider
+    // // Slider
 
-    //Create a marker layer (in the example done via a GeoJSON FeatureCollection)
-    var sliderControl = L.control.sliderControl({position: "bottomleft", layer: fires});
+    // //Create a marker layer (in the example done via a GeoJSON FeatureCollection)
+    // var sliderControl = L.control.sliderControl({position: "bottomleft", layer: fires});
 
-    //Make sure to add the slider to the map ;-)
-    // map.addControl(sliderControl);
+    // //Make sure to add the slider to the map ;-)
+    // // map.addControl(sliderControl);
 
-    sliderControl.addTo(myMap)
+    // sliderControl.addTo(myMap)
 
-    //And initialize the slider
-    sliderControl.startSlider();
+    // //And initialize the slider
+    // sliderControl.startSlider();
 };
