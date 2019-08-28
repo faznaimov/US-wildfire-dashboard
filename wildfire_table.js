@@ -52,7 +52,6 @@ function resetTableBottun() {
 	renderTable(data);
 };
 
-
 renderTable(data);
 filter.on("click", filterTableBottun );
 reset.on("click", resetTableBottun);
