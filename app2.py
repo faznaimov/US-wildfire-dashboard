@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 
 from flask import Flask, jsonify, render_template
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy 
+import sqlite3
 
 app = Flask(__name__)
 
@@ -32,17 +33,6 @@ fire = Base.classes.Fires
 def index():
     """Return the homepage."""
     return render_template("index.html")
-
-@app.route("")
-def columns():
-
-    # Use Pandas to perform the sql query
-    stmt = db.session.query(fires).statement
-    df = pd.read_sql_query(stmt, db.session.bind)
-
-    # Return a list of the column names (sample names)
-    return jsonify(list(df.columns))
-
 
 @app.route("data")
 def fire_data(sample):
@@ -70,33 +60,42 @@ def fire_data(sample):
         wildfire_data["FIRE_SIZE"] = result[4]
         wildfire_data["LATITUDE"] = result[5]
         wildfire_data["LONGITUDE"] = result[6]
-        wildfire_data["LATITUDE"] = result[7]
-        wildfire_data["STATE"] = result[8]
-        wildfire_data["COUNTY"] = result[9]
+        wildfire_data["STATE"] = result[7]
+        wildfire_data["COUNTY"] = result[8]
 
     print(wildfire_data)
     return jsonify(wildfire_data)
 
-@app.route("")
-def chart():
-    ##date = strftime(‘%m-%Y’, fires.DISCOVERY_DATE)
+@app.route("/fire_causes")
+def wildfire_causes():
+    fire = pd.read_sql_query("SELECT * FROM Fires",conn)
     
-    Causes = session.query(fires.STAT_CAUSE_DESCR, function.count(fires.STAT_CAUSE_DESCR), )./ 
-                group_by(fires.STAT_CAUSE_DESCR)./
-                    order_by(fires.STAT_CAUSE_DESCR)
-                
+    fire["DISCOVERY_DATE"] = pd.to_datetime(fire['DISCOVERY_DATE'])
+    
+    fire["DISCOVERY_DATE"]= fire["DISCOVERY_DATE"].dt.strftime('%m-%Y') 
 
-#SELECT
-    #STAT_CAUSE_DESCR as cause,
-    #COUNT(STAT_CAUSE_DESCR) as count,
-    #strftime(‘%m-%Y’, DISCOVERY_DATE) as date
-#FROM
-    #Fires
-#GROUP BY
-    #STAT_CAUSE_DESCR, DATE
-#ORDER BY
-    #STAT_CAUSE_DESCR, DISCOVERY_DATE;
+    fire_data_causes = fire[["STAT_CAUSE_DES", "DISCOVERY_DATE"]]
+
+    wildfire_data_causes = pd.DataFrame({'COUNT':fire_data_causes.groupby(["STAT_CAUSE_DESCR","FIRE_YEAR"]).size()}).reset_index()
+
+    wildfire_causes = wildfire_data_causes.to_dict()
+
+    return jsonify(wildfire_causes)
+
+@app.route("/fire_count")
+def wildfire_count():
+    fire = pd.read_sql_query("SELECT * FROM Fires",conn)
+
+    fire_data = fire[["FIRE_YEAR", "FIRE_SIZE", "LATITUDE", "LONGITUDE"]]
+
+    fire_size_data = pd.DataFrame({'COUNT':fire_data.groupby(["FIRE_YEAR","FIRE_SIZE"]).size()}).reset_index()
+
+    wildfire_data_size = fire_size_data.to_dict()
+
+    return jsonify(wildfire_data_size)
+
 
 if __name__ == "__main__":
     app.run()
+
 
