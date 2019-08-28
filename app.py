@@ -1,5 +1,3 @@
-import os
-
 import pandas as pd
 import numpy as np
 
@@ -13,22 +11,21 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/FPA_FOD_20170508.sqlite"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-#################################################
-# Database Setup
-#################################################
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/bellybutton.sqlite"
 db = SQLAlchemy(app)
 
 # reflect an existing database into a new model
 Base = automap_base()
+
 # reflect the tables
 Base.prepare(db.engine, reflect=True)
+engine = create_engine("sqlite:///db/FPA_FOD_20170508.sqlite", encoding='utf8')
+conn = engine.connect()
+session = Session(engine)
 
-# Save references to each table
-Samples_Metadata = Base.classes.sample_metadata
-Samples = Base.classes.samples
+fire = Base.classes.Fires
 
 
 @app.route("/")
@@ -36,70 +33,70 @@ def index():
     """Return the homepage."""
     return render_template("index.html")
 
-
-@app.route("/names")
-def names():
-    """Return a list of sample names."""
+@app.route("")
+def columns():
 
     # Use Pandas to perform the sql query
-    stmt = db.session.query(Samples).statement
+    stmt = db.session.query(fires).statement
     df = pd.read_sql_query(stmt, db.session.bind)
 
     # Return a list of the column names (sample names)
-    return jsonify(list(df.columns)[2:])
+    return jsonify(list(df.columns))
 
 
-@app.route("/metadata/<sample>")
-def sample_metadata(sample):
-    """Return the MetaData for a given sample."""
+@app.route("data")
+def fire_data(sample):
     sel = [
-        Samples_Metadata.sample,
-        Samples_Metadata.ETHNICITY,
-        Samples_Metadata.GENDER,
-        Samples_Metadata.AGE,
-        Samples_Metadata.LOCATION,
-        Samples_Metadata.BBTYPE,
-        Samples_Metadata.WFREQ,
+        fire.FIRE_YEAR,
+        fire.DISCOVERY_DATE,
+        fire.DISCOVERY_TIME,
+        fire.STAT_CAUSE_DESCR,
+        fire.FIRE_SIZE,
+        fire.LATITUDE,
+        fire.LONGITUDE,
+        fire.STATE,
+        fire.COUNTY, 
     ]
+    
+    results = db.session.query(*sel)
 
-    results = db.session.query(*sel).filter(Samples_Metadata.sample == sample).all()
-
-    # Create a dictionary entry for each row of metadata information
-    sample_metadata = {}
+    ## creating dictionary 
+    wildfire_data = []
     for result in results:
-        sample_metadata["sample"] = result[0]
-        sample_metadata["ETHNICITY"] = result[1]
-        sample_metadata["GENDER"] = result[2]
-        sample_metadata["AGE"] = result[3]
-        sample_metadata["LOCATION"] = result[4]
-        sample_metadata["BBTYPE"] = result[5]
-        sample_metadata["WFREQ"] = result[6]
+        wildfire_data["FIRE_YEAR"] = result[0]
+        wildfire_data["DISCOVERY_DATE"] = result[1]
+        wildfire_data["DISCOVERY_TIME"] = result[2]
+        wildfire_data["STAT_CAUSE_DESCR"] = result[3]
+        wildfire_data["FIRE_SIZE"] = result[4]
+        wildfire_data["LATITUDE"] = result[5]
+        wildfire_data["LONGITUDE"] = result[6]
+        wildfire_data["LATITUDE"] = result[7]
+        wildfire_data["STATE"] = result[8]
+        wildfire_data["COUNTY"] = result[9]
 
-    print(sample_metadata)
-    return jsonify(sample_metadata)
+    print(wildfire_data)
+    return jsonify(wildfire_data)
 
+@app.route("")
+def chart():
+    ##date = strftime(‘%m-%Y’, fires.DISCOVERY_DATE)
+    
+    Causes = session.query(fires.STAT_CAUSE_DESCR, function.count(fires.STAT_CAUSE_DESCR), )./ 
+                group_by(fires.STAT_CAUSE_DESCR)./
+                    order_by(fires.STAT_CAUSE_DESCR)
+                
 
-@app.route("/samples/<sample>")
-def samples(sample):
-    """Return `otu_ids`, `otu_labels`,and `sample_values`."""
-    stmt = db.session.query(Samples).statement
-    df = pd.read_sql_query(stmt, db.session.bind)
-
-    # Filter the data based on the sample number and
-    # only keep rows with values above 1
-    sample_data = df.loc[df[sample] > 1, ["otu_id", "otu_label", sample]]
-
-    # Sort by sample
-    sample_data.sort_values(by=sample, ascending=False, inplace=True)
-
-    # Format the data to send as json
-    data = {
-        "otu_ids": sample_data.otu_id.values.tolist(),
-        "sample_values": sample_data[sample].values.tolist(),
-        "otu_labels": sample_data.otu_label.tolist(),
-    }
-    return jsonify(data)
-
+#SELECT
+    #STAT_CAUSE_DESCR as cause,
+    #COUNT(STAT_CAUSE_DESCR) as count,
+    #strftime(‘%m-%Y’, DISCOVERY_DATE) as date
+#FROM
+    #Fires
+#GROUP BY
+    #STAT_CAUSE_DESCR, DATE
+#ORDER BY
+    #STAT_CAUSE_DESCR, DISCOVERY_DATE;
 
 if __name__ == "__main__":
     app.run()
+
