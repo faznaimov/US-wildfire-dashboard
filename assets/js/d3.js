@@ -408,7 +408,7 @@ function dsLineChart(cause,dataset) {
         .attr("id","lineChartTitle2")
         .attr("x",width/2)
         .attr("y", -15)	
-        ;
+    ;
     /* descriptive titles -- end */
         
     plot.append("path")
@@ -416,7 +416,7 @@ function dsLineChart(cause,dataset) {
         .attr("d", line)	
         // add color
         .attr("stroke", "lightgrey")
-        ;
+    ;
     
     plot.selectAll(".dot")
         .data(firstDatasetLineChart)
@@ -431,15 +431,7 @@ function dsLineChart(cause,dataset) {
         .attr("stroke", "lightgrey")
         .append("title")
         .text(function(d) { return "Total number of wildfires in "+ d.date + " was " + d.count; })
-        ;
-
-    // svg.append("text")
-    //     .text("Wildfire 1992-2015")
-    //     .attr("id","lineChartTitle1")	
-    //     .attr("x",margin.left + ((width + margin.right)/2))
-    //     .attr("y", 80)
-    //     ;
-
+    ;
 }
 
 /* ** UPDATE CHART ** */
@@ -565,15 +557,21 @@ d3.csv("assets/data/fire_data.csv").then(function(csvData){
     dsBarChart(cause,dataset);
 
     dsLineChart(cause,dataset);
- 
-    color = d3.scaleOrdinal(d3.schemePaired)
+
     // y axis labels event listener
 
+    d3.select("#pieChart").select('.title')
+        .on("click", function(){
+            updateBarChart("All", "lightgrey", dataset);
+            updateLineChart("All", "lightgrey", dataset);
+    })
+
     d3.select("#pieChart").selectAll("g.slice")
-        .on("click", function(d,i) {
-            // var color = d3.selectAll("path") SELECT FILL VALUE
-            updateBarChart(d.data.cause, color(i), dataset);
-            updateLineChart(d.data.cause, color(i), dataset);
+        .on("click", function(d) {
+        
+            var color = d3.select(d3.event.target).attr('fill') // SELECT FILL VALUE
+            updateBarChart(d.data.cause, color, dataset);
+            updateLineChart(d.data.cause, color, dataset);
   
         });
 });

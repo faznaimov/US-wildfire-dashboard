@@ -1,19 +1,6 @@
-/* .dashboard {
-  position: relative;
+#pieChart{
+  cursor: pointer;
 }
-
-#pieChart {
-  width: 450px;
-  height: 450px;
-  padding: 20px;
-
-  position: absolute;
-  top: 20%;
-  left: 10%;
-
-  margin: -70px 0 0 -170px;
-} */
-
 #lineChart {    
 	position:absolute;
 	top:10px;
@@ -99,8 +86,3 @@ td {
 	text-anchor: middle;
 	font-weight: bold;
 }
-/* 
-.inactive:hover {
-  fill: #000;
-  cursor: pointer;
-} */
