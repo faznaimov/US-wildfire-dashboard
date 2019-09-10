@@ -59,8 +59,8 @@ function dsPieChart(){
         }
     
 
-        var width = 450,
-            height = 450,
+        var width = 400,
+            height = 400,
             outerRadius = Math.min(width, height) / 2,
             innerRadius = outerRadius * .999,   
             // for animation
@@ -170,7 +170,7 @@ function dsBarChart(cause, dataset) {
     
     var margin = {top: 30, right: 5, bottom: 20, left: 50},
         width = 1080 - margin.left - margin.right,
-        height = 350 - margin.top - margin.bottom,
+        height = 300 - margin.top - margin.bottom,
         barPadding = 1
                     
     var xScale = d3.scaleLinear()
@@ -277,7 +277,7 @@ function updateBarChart(cause, colorChosen, dataset) {
         
     var margin = {top: 30, right: 5, bottom: 20, left: 50},
         width = 1080 - margin.left - margin.right,
-        height = 350 - margin.top - margin.bottom,
+        height = 300 - margin.top - margin.bottom,
         barPadding = 1
     ;
     var xScale = d3.scaleLinear()
@@ -348,7 +348,7 @@ function dsLineChart(cause,dataset) {
 
     var margin = {top: 100, right: 20, bottom: 20, left: 100},
         width = 700 - margin.left - margin.right,
-        height = 450 - margin.top - margin.bottom
+        height = 400 - margin.top - margin.bottom
     ;
 
     
@@ -449,7 +449,7 @@ function updateLineChart(cause, colorChosen, dataset) {
 
     var margin = {top: 100, right: 20, bottom: 20, left: 100},
         width = 700 - margin.left - margin.right,
-        height = 450 - margin.top - margin.bottom
+        height = 400 - margin.top - margin.bottom
     ;
 
     var xScale = d3.scaleLinear()
