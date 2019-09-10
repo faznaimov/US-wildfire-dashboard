@@ -1,9 +1,9 @@
 # US wildfire dashboard
-Team members:[Jose Martinez Carvajal](https://github.com/JoseCarvajal-0061), [Rachel Song](https://github.com/rachelksong), [Ashley Peterson](https://github.com/shooshie2012), [Faz Naimov](https://github.com/faznaimov)
+Team members: [Jose Martinez Carvajal](https://github.com/JoseCarvajal-0061), [Rachel Song](https://github.com/rachelksong), [Ashley Peterson](https://github.com/shooshie2012), [Faz Naimov](https://github.com/faznaimov)
 
 [project](herokuapp)
 
-## Interactive visualizations project on 24 years of US wildfire data
+#### Interactive visualizations project on 24 years of US wildfire data
 
 Uncontrolled blazes spurred by weather, wind, and dry underbrush, wildfires can burn millions of acres of land at rapid speeds and can consume everything—trees, homes, even humans—in their paths. In our project we decided to analyze wildfire that occured from 1992 to 2015. In order to show better picture we have created two visualizations: the dashboard and the map.
 
