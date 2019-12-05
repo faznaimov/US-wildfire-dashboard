@@ -9,4 +9,6 @@ Uncontrolled blazes spurred by weather, wind, and dry underbrush, wildfires can 
 
 Dashboard shows the number of fires that happened each year, it also provides user ability to see the number of fires by cause of the fire. D3 is used to make the dashboard interactive. Interactive map illustrates the occurrence of the fire by location, time and fire size. Kepler.gl map is used. Currently, map has only data of 2015.
 
+#### Tech stack: Python, Flask, CSS, HTML, Bootstrap, JavaScript, SQLAlchemy, D3, Kepler.gl
+
 Dataset: [188 million US wildfires](https://www.kaggle.com/rtatman/188-million-us-wildfires/)
