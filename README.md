@@ -5,9 +5,9 @@ Team members: [Jose Martinez Carvajal](https://github.com/JoseCarvajal-0061), [R
 
 #### Interactive visualizations project on 24 years of US wildfire data
 
-Uncontrolled blazes spurred by weather, wind, and dry underbrush, wildfires can burn millions of acres of land at rapid speeds and can consume everything—trees, homes, even humans—in their paths. In our project we decided to analyze wildfire that occured from 1992 to 2015. In order to show better picture we have created two visualizations: the dashboard and the map.
+Uncontrolled blazes spurred by weather, wind, and dry underbrush, wildfires can burn millions of acres of land at rapid speeds and can consume everything—trees, homes, even humans—in their paths. In our project, we decided to analyze wildfires that occurred from 1992 to 2015. To show a better picture, we have created two visualizations: the dashboard and the map.
 
-Dashboard shows the number of fires that happened each year, it also provides user ability to see the number of fires by cause of the fire. D3 is used to make the dashboard interactive. Interactive map illustrates the occurrence of the fire by location, time and fire size. Kepler.gl map is used. Currently, map has only data of 2015.
+The dashboard shows the number of fires that happened each year and, it also provides users the ability to see the number of fires by cause of the fire. D3 is used to make the dashboard interactive. An interactive map illustrates the occurrence of the fire by location, time, and fire size. Kepler.gl map is used. Currently, the map has only data from 2015.
 
 #### Tech stack: Python, Flask, CSS, HTML, Bootstrap, JavaScript, SQLAlchemy, D3, Kepler.gl
 
