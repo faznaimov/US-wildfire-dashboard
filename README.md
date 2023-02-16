@@ -1,7 +1,7 @@
 # US wildfire dashboard
 Team members: [Jose Martinez Carvajal](https://github.com/JoseCarvajal-0061), [Rachel Song](https://github.com/rachelksong), [Ashley Peterson](https://github.com/shooshie2012), [Faz Naimov](https://github.com/faznaimov)
 
-[Visit Deployed Page (Does not support Internet Explorer)](http://us-wildfire-dashboard.herokuapp.com)
+[Visit Deployed Page (Does not support Internet Explorer)](https://us-wildfire.onrender.com)
 
 #### Interactive visualizations project on 24 years of US wildfire data
 
